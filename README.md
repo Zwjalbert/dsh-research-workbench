@@ -2,7 +2,7 @@
 
 一个装进 DSH 对话里的科研快路径插件：检索文献、读文献、写综述、头脑风暴、设计实验、下载数据、跑统计、做质性编码。每一步都通过对话完成，工具结果用可视化卡片渲染。
 
-## 现在能做什么
+## 功能
 
 | 阶段 | 工具 | 说明 |
 |---|---|---|
@@ -18,22 +18,37 @@
 | 质性分析 | `research_qual` | 文本/CSV 分段编码、代码频次、共现、覆盖率和代表性引文 |
 | 产物回顾 | `research_board` | 列出当前工作区里的科研产物和路径 |
 
-## 安装状态
+## 环境要求
 
-已安装到当前 DSH profile，包名 `dsh-research-workbench`，版本 `0.1.2`。宿主工具、系统提示和客户端槽位已注册：
+- DeepSeek Harness Web（当前验证版本：DSH 0.2.x）
+- Node.js 20+
+- 不需要额外 npm 依赖，也不需要构建步骤
 
-- 输入框下方：`conversation.composer.dock` 出现「研 · 科研台」
-- 每个科研工具结果：`tool.call.toolview` 自定义卡片
-- 系统提示：`Research workbench (fast path)`
+## 安装
 
-浏览器工具当前被 DSH Web 的登录门挡住，未能截图验证视觉效果；刷新当前页面后应能看到科研台。若没有出现，先确认页面已刷新，再检查浏览器控制台是否有 `slot entry crashed`。
+本仓库是完整的本地 bundle 包，包含 `dsh.bundle.patch` 和 `dsh.client` 声明。
 
-## 快速开始
+1. 克隆仓库到本地：
 
-刷新 DSH 页面，在输入框下方点击任意阶段，例如「检索」：
+```bash
+git clone https://github.com/<你的用户名>/dsh-research-workbench.git
+```
 
-1. 直接点击：填入提示词并立即执行
-2. `Alt+点击`：只填入输入框，自己改完再回车
+2. 在 DSH 对话里让 Agent 安装这个本地 bundle，并把路径替换成实际目录：
+
+> 使用 plugin_manager 的 install_bundle，target 指向 `<你的路径>/dsh-research-workbench`
+
+3. 安装成功后刷新 DSH 页面。输入框下方应该出现「研 · 科研台」。
+
+> 安装本地 bundle 可能需要 DSH 的 Full access 或一次安装批准。这个插件没有安装脚本，不需要批准 build script。
+
+## 使用
+
+点击科研台里的阶段：
+
+- 直接点击：填入该阶段的提示词并立即执行
+- `Alt + 点击`：只填入输入框，修改后自己回车
+- 「产物」：查看当前工作区里生成的科研文件
 
 也可以直接说：
 
@@ -41,7 +56,7 @@
 
 ## 快路径约定
 
-插件注入的系统提示要求：
+插件会注入一段系统提示，要求：
 
 - 一个阶段一次工具调用，先给 3–6 条要点，再给一个下一步决策
 - 不重复整段工具输出
@@ -51,9 +66,9 @@
 
 ## 产物目录
 
-所有输出都在工作区：
+所有输出都在 DSH 当前工作区：
 
-```
+```text
 research-output/
   index.json
   searches/
@@ -66,7 +81,7 @@ research-output/
   data/
 ```
 
-每个 JSON 产物旁边通常有 `.md` 版本；综述和设计稿可以直接编辑。索引文件只保留最近 500 条记录。
+每个 JSON 产物旁边通常有 `.md` 版本；综述和设计稿可以直接编辑。索引文件只保留最近 500 条记录。`research-output/` 已加入 `.gitignore`，不会被提交到仓库。
 
 ## 数据源与限制
 
@@ -80,4 +95,25 @@ research-output/
 
 ## 开发
 
-插件源码就在本目录。宿主入口 `index.js`，客户端入口 `client.js`，算法在 `lib/`。修改后如宿主代码未热更新，可在插件管理里禁用再启用，或重启 DSH；客户端代码需要刷新页面。
+```text
+index.js         宿主入口：工具、系统提示、文件存储
+client.js        客户端入口：科研台 dock、工具结果卡片
+lib/lit.js       文献检索、筛选、分析、综述
+lib/ideas.js     头脑风暴与可证伪想法
+lib/design.js    样本量、检验力、实验设计
+lib/math.js      统计检验与效应量
+lib/qual.js      质性编码
+lib/data.js      数据下载与检查
+lib/io.js        工作区存储、CSV、索引
+locale/          插件元数据的中英文标题和描述
+icon.svg         插件图标
+```
+
+改完代码后：
+
+- 宿主代码：在插件管理里禁用再启用，或重启 DSH
+- 客户端代码：刷新页面
+
+## License
+
+MIT

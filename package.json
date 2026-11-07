@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "description": "Fast research loop for DSH conversations: literature search, synthesis, brainstorming, experiment design, data download, statistics, qualitative coding, and review drafting.",
+  "license": "MIT",
   "exports": {
     ".": "./index.js",
     "./client": "./client.js",
@@ -17,7 +18,8 @@
     "cordis.patch.yml",
     "locale/*.json",
     "icon.svg",
-    "README.md"
+    "README.md",
+    "LICENSE"
   ],
   "dsh": {
     "bundle": {
